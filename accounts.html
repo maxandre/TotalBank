@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//NO" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<div class="grid_24 main_content">
+	<div class="grid_24 main_content_heading_container">
+		<div class="grid_24 main_content_heading">
+			<div class="grid_12">Mine Plasseringer</div>
+			<div class="grid_12 align_right" id="placements"></div>
+		</div>
+	</div>
+	<div class="clearVerticalLarge"></div>
+	<div class="grid_24 main_content_body">
+		<div class="grid_24 content_heading">
+			<div class="grid_6">Kontonummer</div>
+			<div class="grid_10">Kontonavn</div>
+			<div class="grid_4">Saldo</div>
+			<div class="grid_4 align_right">Disponibelt</div>
+		</div>
+		<div class="clearVerticalMedium"></div>
+		<div class="grid_24 content_body" id="accounts"></div>
+	</div>
+</div>
+<script type="text/javascript">
+</script>
+<script type="text/javascript">
+	document.getElementById("placements").innerHTML = currencyPrefix + " " + addThousandSeparator(bankCustomer.totalAssets());
+	var accounts, layoutHTML, accountHTML, i;
+	accounts = bankCustomer.accounts;
+	layoutHTML = "";
+	
+	for (i = 0; i < accounts.length; i++) {
+		layoutHTML += "<div class=\"grid_24 accordion_head\">";
+		layoutHTML += "<a class=\"noLink\" href=\"#\"> ";
+		layoutHTML += "<div class=\"grid_6 icon-arrow-right\"> " + accounts[i].accountNumber + "</div>";
+		layoutHTML += "<div class=\"grid_10\">" + accounts[i].name + "</div>";
+		layoutHTML += "<div class=\"grid_4\">" + currencyPrefix + " " + addThousandSeparator(accounts[i].balance, 0) + "</div>";
+		layoutHTML += "<div class=\"grid_4 align_right\">" + currencyPrefix + " " + addThousandSeparator(accounts[i].available, 0) + "</div></div>";
+		layoutHTML += "<div class=\"grid_24 accordion_body accountMenu\" id=\"" + accounts[i].accountNumber + "\"></div></div>";
+		layoutHTML += "<div class=\"clearVerticalSmall\"></div>";
+	}
+	document.getElementById("accounts").innerHTML = layoutHTML;
+
+	accountHTML = "";
+	for (i = 0; i < accounts.length; i++) {
+		accountHTML = "<div class=\"grid_12\"><p>Betal regning</p><p>Overfør</p></div>";
+		accountHTML += "<div class=\"grid_12\"><p><a class=\"noLink openStatement accountMenuLink\" id=\"" + accounts[i].accountNumber + "\" href=\"#\">Kontoutskrift</a></p></div>";
+		$(".accountMenu#" + accounts[i].accountNumber).html(accountHTML);
+	}
+	$('.accordion_head').click(function() {
+		$(this).next().toggle('slow', function() {
+			if ($(this).prev().hasClass('accordion_head_open')) {
+				$(this).prev().removeClass('accordion_head_open');
+				$(this).removeClass('accordion_body_open');
+				
+			
+			} else {
+				$(this).prev().addClass('accordion_head_open');
+				$(this).addClass('accordion_body_open');
+			}
+		});
+	
+		return false;
+	}).next().hide();
+	$(".accountMenuLink").click(function(event, ui) {
+		addCode("Klikket på en accountMenuLink");
+		TotalBank.setActiveAccount(TotalBank.getCustomer().getAccount($(this).attr('id')));
+		addCode("activeAccount satt til " + TotalBank.getActiveAccount().accountNumber);
+	}); 
+	
+	$(".openStatement").click(function(event, ui) {
+		var datePickerDiv = TotalBank.getRangePickerForm();
+		TotalBank.resetCurrentRange();
+		$(datePickerDiv).dialog('open');
+		$(datePickerDiv).bind("dialogclose", function(event, ui) {
+			loadContent("main_content_2", "statement.html", "scale", 1000);
+			setTimeout("loadContent(\"right_content_2\", \"budget.html\", \"explode\", 1000)", 1000);
+			$(datePickerDiv).unbind("dialogclose");
+		});
+
+		addCode("activeAccount.accountNumber = " + TotalBank.getActiveAccount().accountNumber);
+	});
+</script>
+
+</body>
+</html>

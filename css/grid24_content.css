@@ -1,0 +1,75 @@
+@CHARSET "UTF-8";
+
+div {
+	box-sizing:border-box;
+	-moz-box-sizing:border-box; /* Firefox */
+	-webkit-box-sizing:border-box; /* Safari */
+}
+
+#main_body {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin-top: 0 auto -80px;
+	margin-bottom: 0 auto -40px;
+}
+
+#top_menu_sub_container {
+	position: absolute;
+	bottom: 0px;
+}
+
+#top_menu_container {
+	height: 80px;
+	overflow: hidden;
+}
+
+#footer_container{
+	height: 40px;
+	overflow:hidden;
+}
+
+#top_menu_pill_container {
+	height: 10px;
+}
+
+#top_menu_pill {
+	position: absolute;
+	background-color: grey;
+	height: 100%;
+	width: 4%;	
+}
+
+.top_menu_button {
+	width: 5%;
+}
+
+.main_content {
+	border-width:1px;
+	border-style:solid;
+	border-color:black;
+	border-top-left-radius:5px;
+	-webkit-border-top-left-radius:5px; /* Safari */
+	border-top-right-radius:5px;
+	-webkit-border-top-right-radius:5px; /* Safari */
+	border-bottom-left-radius:5px;
+	-webkit-border-bottom-left-radius:5px; /* Safari */
+	border-bottom-right-radius:5px;
+	-webkit-border-bottom-right-radius:5px; /* Safari */
+	overflow: auto;
+}
+
+.main_content_body {
+	padding-left: .5%;
+	padding-right: .5%;
+}
+
+#main_content_1,
+#right_content_1,
+#main_content_2,
+#right_content_2,
+#main_content_3,
+#right_content_3 {
+	padding-left: .5%;
+	padding-right: .5%;
+}

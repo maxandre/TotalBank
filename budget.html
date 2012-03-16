@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//NO" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+<div class="grid_24 main_content">
+	<div class="grid_24 main_content_heading_container">
+		<div class="grid_24 main_content_heading align_center" id="budget_name"></div>
+	</div>
+	<div class="clearVerticalLarge"></div>
+	<div class="grid_24 main_content_body" id="budget_body">
+	</div>
+</div>
+
+<script type="text/javascript">
+
+var html = TotalBank.getBudgetAsTreeView(exampleMonth1);
+document.getElementById("budget_name").innerHTML = html[0];
+document.getElementById("budget_body").innerHTML = html[1];
+
+$('.topCategory, .subCategory').bind('click', function() {
+	$(this).siblings('ul').toggle();
+	if($(this).next().attr('style').indexOf("none") > 0) {
+		$(this).siblings('ul').addClass('temp1');
+		$('.temp1 ul').hide();
+		$(this).siblings('ul').removeClass('temp1');
+	}
+}).siblings('ul').hide();
+
+addDragNdropToBudget(".statementLine", ".budgetCategory", "#main_body", TotalBank.categorizeStatementLine);
+
+</script>

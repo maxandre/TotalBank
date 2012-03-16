@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//NO" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<script src="../jquery/jquery.js" charset="UTF-8"></script>
+<script src="../jquery/jquery.hoverIntent.js" charset="UTF-8"></script>
+<style>
+ul {
+	list-style-type:none;
+	padding-left: 20px;
+	margin: 0px;
+}
+
+li.sub {
+	list-style-type: circle;
+}
+
+</style>
+
+</head>
+<body>
+<ul class="treeview">
+	<li>
+		<a class="topNode" href="#">Top Level Item 1</a>
+		<ul>
+			<li class="item">
+				<a href="#">List Item 1.1</a>
+			</li>
+			<li>
+				<a class="subNode" href="#">List Item 1.2</a>
+				<ul>
+					<li>
+						<a class="item" href="#">List Item 1.2.1</a>
+					</li>
+					<li>
+						<a class="subNode" href="#"> List Item 1.2.2</a>
+						<ul>
+							<li>
+								<a class="item" href="#">List Item 1.2.2.1</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+	<li>
+		<a class="topNode" href="#">Top Level Item 2</a>
+		<ul>
+			<li>
+				<a class="item" href="#">List Item 2.1</a>
+			</li>
+			<li>
+				<a class="item" href="#">List Item 2.2</a>
+			</li>
+		</ul>
+	</li>
+	<li>
+		<a class="topNode" href="#"> Top Level Item 3</a>
+		<ul>
+			<li>
+				<a class="item" href="#">List Item 3.1</a>
+			</li>
+		</ul>
+	</li>
+</ul>
+
+<script>
+/*
+$('.topNode').hoverIntent(function() {
+	$(this).siblings('ul').show(1000);
+}, function() {
+}).siblings('ul').hide();
+
+$('.subNode').hoverIntent(function() {
+	$(this).siblings('ul').show(1000);
+}, function() {
+	
+}).siblings('ul').hide();
+
+$('.treeview').hoverIntent(function() {
+}, function() {
+	$('.subNode').siblings('ul').hide(1000, function() {
+		$('.topNode').siblings('ul').hide(1000);	
+	});
+	
+});
+*/
+/* This works for clicks. DONT MESS IT UP !!! */
+$('.topNode').bind('click', function() {
+	$(this).siblings('ul').toggle();
+	if($(this).next().attr('style').indexOf("none") > 0) {
+		$(this).next().addClass('temp');
+		$('.temp .subNode').next().hide();
+		$(this).next().removeClass('temp');
+	} else {
+		$(this).parent().siblings().addClass('temp');
+		$('.temp .topNode').next().hide().addClass('temp2');
+		$('.temp2 .subNode').next().hide();
+		$('.temp .topNode').next().removeClass('temp2');
+		$(this).parent().siblings().removeClass('temp');
+	}
+}).siblings('ul').hide();
+
+$('.subNode').bind('click', function() {
+	$(this).siblings('ul').toggle();
+	if($(this).next().attr('style').indexOf("none") > 0) {
+		$(this).next().children('li').children('ul').hide();
+	}
+}).siblings('ul').hide();
+
+</script>
+</body>
+</html>
