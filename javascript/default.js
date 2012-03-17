@@ -60,6 +60,7 @@ function loadTotalBank() {
 			TotalBank.updateBudgetCategory(cat);
 			TotalBank.updateTransaction(trans);
 		});
+
 	} else {
 		document.body.style.cursor = 'wait';
 		document.getElementById('main_content_1').innerHTML = loadingMessage;

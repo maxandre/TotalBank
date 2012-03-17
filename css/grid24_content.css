@@ -1,6 +1,6 @@
 @CHARSET "UTF-8";
 
-div {
+body *{
 	box-sizing:border-box;
 	-moz-box-sizing:border-box; /* Firefox */
 	-webkit-box-sizing:border-box; /* Safari */
@@ -37,11 +37,9 @@ div {
 	position: absolute;
 	background-color: grey;
 	height: 100%;
-	width: 4%;	
 }
 
 .top_menu_button {
-	width: 5%;
 }
 
 .main_content {

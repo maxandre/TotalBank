@@ -17,16 +17,17 @@
 
 <body>
 
-<div id="top_menu_container">
+<header id="top_menu_container">
 	<div class="container_24" id="top_menu_sub_container">
-		<header class="grid_24 prefix_3" id="top_menu"></header>
-		<div class="grid_24 prefix_3" id="top_menu_pill_container"><div class="grid_1" id="top_menu_pill"></div></div>
+		<nav class="grid_24 prefix_3" id="top_menu"></nav>
+		<div class="grid_24 prefix_3" id="top_menu_pill_container"><div class="grid_1" id="top_menu_pill"></div></div>	
+		
 	</div>
-</div>
+</header>
 <div class="clearVerticalLarge"></div>
 <div class="container_24" id="main_body">
 	<div class="grid_3 main_body_content" id="left_menu"></div>
-	<div class="grid_21" id="main_content">
+	<div class="grid_21" id="content">
 		<div class="grid_18 main_body_content" id="main_content_1"></div>
 		<div class="grid_6 main_body_content" id="right_content_1"></div>
 		<div class="clearVerticalLarge"></div>
@@ -38,6 +39,7 @@
 	</div>
 	<div class="clearVerticalLarge"></div>
 	<div class="grid_24" id="codeContainer">
+		<button type="button" onclick="document.getElementById('code').value=''">Clear !</button>
 		<textarea style="width: 100%;" id="code" rows="20" cols="100"></textarea>
 	</div>
 </div>

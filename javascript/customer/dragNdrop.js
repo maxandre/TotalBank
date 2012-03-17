@@ -9,8 +9,7 @@ function addDragNdropToBudget(dragSelector, dropSelector, scope, onSuccessfulDro
 	 * addCode("commom parent is " + $(commonParent).attr("id"));
 	 *
 	*/
-	
-	$(document).undelegate(dragSelector, 'mousedown.myDrag');
+	$(document).undelegate('.statementLine > td[class!=\"statementLineChoices\"]', 'mousedown.myDrag');
 	$(document).delegate('.statementLine > td[class!=\"statementLineChoices\"]', 'mousedown.myDrag', function(event) {
 		event.preventDefault();
 		//Input

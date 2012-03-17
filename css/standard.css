@@ -18,6 +18,18 @@ a.noLink:active {
 	position: relative;
 }
 
+#top_menu > .btn:first-child {
+	border-bottom-left-radius: 0px;
+}
+
+#top_menu > .btn:last-child {
+	border-bottom-right-radius: 0px;
+}
+
+#top_menu > .btn {
+	background-color: grey;
+	overflow-y: visible;
+}
 
 .main_content {
 	overflow: auto;

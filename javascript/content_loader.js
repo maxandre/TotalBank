@@ -1,4 +1,6 @@
 var topMenuContent;
+var topMenuButtons = [];
+var topMenuButtonsLeft = [];
 var leftMenuContent;
 var mainContent1;
 var mainContent2;
@@ -7,6 +9,8 @@ var rightContent1;
 var rightContent2;
 var rightContent3;
 var footerContent;
+var lastTopMenuButtonPressed = 0;
+
 
 var topMenuClicked = 0;
 var topMenuLinks = [];
@@ -26,24 +30,31 @@ function update(uri, effect, time) {
 	loadContent(targetElement, uri, effect, time);
 }
 
+
 function writeTopMenu() {
-	var menu = document.createElement('div'), button;
-	menu.setAttribute('class', 'btn-group');
-	menu.setAttribute('data-toggle', 'buttons-radio');
-	
+	$('#top_menu').addClass('btn-group').attr('data-toggle', 'buttons-radio');
+	var menu = document.getElementById('top_menu');
+
 	for (var i = 0; i < topMenuLinks.length; i++) {
 		button = document.createElement('button');
-		button.setAttribute('class', 'btn top_menu_button');
+		button.setAttribute('class', 'btn grid_1');
+		button.setAttribute('id', i);
 		button.innerHTML = topMenuLinks[i].title;
 		menu.appendChild(button);
+		topMenuButtons[topMenuButtons.length] = button;
+		$(button).on('click', function() {
+			var cs = "grid_24 prefix_", pf = 3;
+			writeCode("Button clicked: " + this.id);
+			lastTopMenuButtonPressed = parseInt(this.id);
+			pf += lastTopMenuButtonPressed;
+			cs +=  pf;
+			document.getElementById('top_menu_pill_container').setAttribute('class', cs);
+		});
 	}
-	
-	document.getElementById("top_menu").appendChild(menu);
 	$(menu).button();
-	var pos = $(this).offset();
-	elementBeingDraggedMouseOffset.x = pos.left - event.pageX;
-	elementBeingDraggedMouseOffset.y = pos.top - event.pageY;
 }
+
+
 
 function writeFooter() {
 	var now = new Date();
@@ -59,9 +70,9 @@ function loadContent(targetElement, uri, effect, time) {
 	if (debug) {
 		startMethod("showContent()");
 	}
-	
+
 	var options = {};
-	
+
 	$('#' + targetElement).load(uri, function(responseText, textStatus, XMLHttpRequest){
 		if (textStatus == "error") {
 			var msg = "Sorry but there was an error. Please try again";
@@ -71,18 +82,18 @@ function loadContent(targetElement, uri, effect, time) {
 			if (effect === "scale") {
 				options = { percent: 100 };
 			} 
-			
+
 			if (effect === "none") {
 				$(this).show(time);
 			} 
-			
+
 			else {
 				$(this).show(effect, options, time);
 			}
 			setContent(targetElement, uri);
 		}
 	});
-		
+
 	if (debug) {
 		endMethod("showContent()");
 	}
@@ -111,11 +122,11 @@ function setContent(targetElement, content) {
 	case 'left_menu':
 		leftMenuContent = content;
 	case 'main_content_1':
-	  mainContent1 = content;
-	  break;
+		mainContent1 = content;
+		break;
 	case 'main_content_2':
-	  mainContent2 = content;
-	  break;
+		mainContent2 = content;
+		break;
 	case 'main_content_3':
 		mainContent3 = content;
 		break;
@@ -133,7 +144,7 @@ function setContent(targetElement, content) {
 		break;
 	default:
 		addCode("Tried to write content to non-existing <div>");
-		alert("Tried to write content to non-existing <div>");
+	alert("Tried to write content to non-existing <div>");
 	}
 }
 
@@ -144,11 +155,11 @@ function getElement(content) {
 		result = 'top_menu';
 		break;
 	case leftMenuContent:
-		 result = 'left_menu';
-		 break;
+		result = 'left_menu';
+		break;
 	case mainContent1:
 		result = 'main_content_1';
-	    break;
+		break;
 	case mainContent2:
 		result = 'main_content_2';
 		break;
@@ -168,7 +179,7 @@ function getElement(content) {
 		result = 'footer';
 		break;
 	default:
-	  alert("Tried to update non-existing content.");
+		alert("Tried to update non-existing content.");
 	}
 	return result;
 }
