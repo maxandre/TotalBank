@@ -13,9 +13,14 @@
 	<div class="grid_24 main_content_body" id="statement_body"></div>
 </div>
 <script>
-var html = TotalBank.getStatementAsHTMLTable();
-document.getElementById("statement_heading").innerHTML = html.heading;
-document.getElementById("statement_body").innerHTML = html.body;
+var statement = TotalBank.getActiveAccount().getStatement(TotalBank.currentRange.start, TotalBank.currentRange.end);
+var heading = "<div class=\"grid_12\">" + lang_accountStatement + "</div><div class=\"grid_12 align_right\">";
+heading += lang_accountNumber + ": " + statement.account.accountNumber;
+heading += " | <i class=\"icon-remove\"></i></div>";
+
+var table = HTMLGenerator.getTransactionsAsTable(statement.transactions);
+document.getElementById("statement_heading").innerHTML = heading;
+document.getElementById("statement_body").appendChild(table);
 
 $('.statementLineAddCategory').on('click', function() {
 	alert("Test.");

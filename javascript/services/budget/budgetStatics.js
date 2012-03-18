@@ -1,3 +1,4 @@
+
 var budgetBackgroundColors = [];
 budgetBackgroundColors[0] = "#00FF00";
 budgetBackgroundColors[1] = "#33FF00";
@@ -39,4 +40,3 @@ function getBudgetHighlightColor(normalColor) {
 	return budgetBackgroundHighlightColors[index];
 }
 
-var budgetStaticsJSLoaded = true;

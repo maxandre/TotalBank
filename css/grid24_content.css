@@ -1,6 +1,9 @@
 @CHARSET "UTF-8";
 
-body *{
+body {
+
+}
+body * {
 	box-sizing:border-box;
 	-moz-box-sizing:border-box; /* Firefox */
 	-webkit-box-sizing:border-box; /* Safari */
@@ -12,6 +15,8 @@ body *{
 	height: 100%;
 	margin-top: 0 auto -80px;
 	margin-bottom: 0 auto -40px;
+	padding-left: 1%;
+	padding-right: 1%;
 }
 
 #top_menu_sub_container {
@@ -61,6 +66,7 @@ body *{
 	padding-left: .5%;
 	padding-right: .5%;
 }
+
 
 #main_content_1,
 #right_content_1,

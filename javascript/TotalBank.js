@@ -20,13 +20,32 @@
 	TotalBank.selectedDates = null;
 	TotalBank.rangeStartSelected = false;
 	TotalBank.rangeEndSelected = false;
+	TotalBank.mouseX;
+	TotalBank.mouseY;
 
 	//Public Method
 	//TODO Renske opp i koden rundt tracking av pill. Initialisering av lyttere, plassering av variabler o.l.
 	TotalBank.trackPillFunction = function() {
-		var targetX = 0, targetW = 0, step = 0, startX = $('#top_menu_pill').offset().left;
+		var targetX = 0, targetW = 0, startX = $('#top_menu_pill').offset().left;
 		if (this.trackPill) {
-			if (this.mouseX < topMenuButtonsLeft[0]) {
+			if (this.mouseX < $(topMenuButtons[0]).offset().left) {
+				targetX = $(topMenuButtons[0]).offset().left;
+				targetW = $(topMenuButtons[1]).offset().left - targetX;
+			} else if (this.mouseX > $(topMenuButtons[topMenuButtons.length-1]).offset().left) { 
+				targetX = $(topMenuButtons[topMenuButtons.length-1]).offset().left;
+				targetW = $(topMenuButtons[topMenuButtons.length-1]).width() + 20;
+			} else {
+				for (var i = topMenuButtons.length -2; i >= 0; i--) {
+					if (this.mouseX > $(topMenuButtons[i]).offset().left) {
+						targetX = $(topMenuButtons[i]).offset().left;
+						targetW = $(topMenuButtons[i+1]).offset().left - targetX;
+						i = -1;
+					}
+				}
+			}
+
+
+/*			if (this.mouseX < topMenuButtonsLeft[0]) {
 				targetX = topMenuButtonsLeft[0] - 2;
 				targetW = $(topMenuButtons[0]).width() + 20;
 			} else if (this.mouseX > topMenuButtonsLeft[topMenuButtonsLeft.length-1]) { 
@@ -41,20 +60,27 @@
 					}
 				}
 			}
+			 */
+
 			if (targetX != startX) {
-				targetX = targetX.toFixed();
+
 				$('#top_menu_pill').animate({
 					left: targetX,
 					width: targetW
-				}, 200, 'linear', function() {
+				}, 100, 'linear', function() {
 					TotalBank.trackPillFunction();
 				});
 			} else {
 				setTimeout("TotalBank.trackPillFunction();", 100);
 			}
 		} else {
-			targetX = topMenuButtonsLeft[lastTopMenuButtonPressed] - 2;
-			targetW = $(topMenuButtons[lastTopMenuButtonPressed]).width() + 20;
+			if (lastTopMenuButtonPressed === topMenuButtons.length-1) {
+				targetX = $(topMenuButtons[topMenuButtons.length-1]).offset().left;
+				targetW = $(topMenuButtons[topMenuButtons.length-1]).width() + 20;
+			} else {
+				targetX = $(topMenuButtons[lastTopMenuButtonPressed]).offset().left;
+				targetW = $(topMenuButtons[lastTopMenuButtonPressed + 1]).offset().left - targetX;
+			}
 			if (targetX != startX) {
 				$('#top_menu_pill').animate({
 					left: targetX,
@@ -65,71 +91,6 @@
 
 	};
 
-	TotalBank.getStatementAsHTMLTable = function() {
-		if (debug) {
-			startMethod("TotalBank.getStatementAsHTMLTable()");
-		}
-
-		var statement = null, body, heading, lines = null, lineNumber = 0, result;
-		statement = this.activeAccount.getStatement(this.currentRange.start, this.currentRange.end);
-		lines = statement.transactions;
-
-		body = "<table class=\"table table-striped table-bordered table-condensed accountStatement\" id=\"";
-		body += this.activeAccount.accountNumber + "\">";
-		body += "<thead><tr>";
-		body += "<th>" + lang_date + "</th>";
-		body += "<th>" + lang_desc + "</th>";
-		body += "<th colspan=\"2\">" + lang_amount + "</th>";
-		body += "<th class=\align_right\">" + lang_budget + "</th>";
-		body += "</thead><tbody>";
-
-		for (lineNumber = 0; lineNumber < lines.length; lineNumber++) {
-			body += TotalBank.getTransactionAsTableRow(lines[lineNumber]);
-		}
-
-		body += " </tbody></table>";
-		heading = "<div class=\"grid_12\">" + lang_accountStatement + "</div><div class=\"grid_12 align_right\">";
-		heading += lang_accountNumber + ": " + TotalBank.getActiveAccount().accountNumber + 
-		" | <i class=\"icon-remove\"></i></div>";
-
-		result = new Object();
-		result.body = body;
-		result.heading = heading;
-
-		if (debug) {
-			endMethod("TotalBank.getStatementAsHTMLTable()");
-		}
-
-		return result;
-	};
-
-	TotalBank.getTransactionAsTableRow = function(transaction) {
-		if (debug) {
-			startMethod("TotalBank.getTransactionAsTableRow()");
-		}
-		var result = "<tr class=\"statementLine\" id=\"" + transaction.id + "\">";
-		result += "<td class=\"statementLineDate\">" + transaction.date.toShortString() + "</td>";
-		result += "<td class=\"statementLineDesc\">" + transaction.desc + "</td>";
-		result += "<td class=\"statementLineCurrencyPrefix\">" + currencyPrefix + "</td>";
-		result += "<td class=\"statementLineAmount\">" + addThousandSeparator(transaction.amount) + "</td>";
-		result += "<td class=\"statementLineChoices\">";
-		//valg for hver transaksjon
-		if (transaction.categoryId > 0) {
-			result += "<a class=\"statementLineRemoveCategory noLink\" href=\"#\"><i class=\"icon-trash\" rel=\"tooltip\" title=\"";
-			result += lang_tooltip_statementLineRemoveCategory + "\"> </i> </a>";
-		} else {
-			result += "<a class=\"statementLineAddCategory noLink\" href=\"#\"><i class=\"icon-share-alt\"rel=\"tooltip\" title=\"";
-			result += lang_tooltip_statementLineAddCategory + "\"> </i> </a>";
-		}
-		result += "<a class=\"statementLineCreateRule noLink\" href=\"#\"><i class=\"icon-pencil\" rel=\"tooltip\" title=\"";
-		result += lang_tooltip_statementLineCreateRule + "\"> </i> </a>";
-		result += "</td>";
-		result += "</tr>";
-		if (debug) {
-			endMethod("TotalBank.getTransactionAsTableRow()");
-		}
-		return result;
-	};
 
 
 	//SMALLBUG - Overskriften på inntekter kommer opp som en link?
@@ -357,7 +318,7 @@
 			startMethod("TotalBank.updateTransaction()");
 		}
 
-		$('.statementLine[id="' + transaction.id + '"]').replaceWith(TotalBank.getTransactionAsTableRow(transaction));
+		$('.statementLine[id="' + transaction.id + '"]').replaceWith(HTMLGenerator.getTransactionAsTableRow(transaction));
 
 		if (debug) {
 			endMethod("TotalBank.updateTransaction()");
@@ -573,7 +534,7 @@
 	$(window).resize(function() {
 		TotalBank.onWindowResize();
 	});
-	
+
 	TotalBank.onWindowResize = function() {
 		var counter = ++resizecounter;
 		var startX = $('#top_menu_pill').offset().left;
