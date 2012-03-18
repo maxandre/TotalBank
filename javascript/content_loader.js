@@ -37,24 +37,17 @@ function writeTopMenu() {
 
 	for (var i = 0; i < topMenuLinks.length; i++) {
 		button = document.createElement('button');
-		button.setAttribute('class', 'btn grid_1');
+		button.setAttribute('class', 'btn');
 		button.setAttribute('id', i);
 		button.innerHTML = topMenuLinks[i].title;
 		menu.appendChild(button);
 		topMenuButtons[topMenuButtons.length] = button;
 		$(button).on('click', function() {
-			var cs = "grid_24 prefix_", pf = 3;
-			writeCode("Button clicked: " + this.id);
 			lastTopMenuButtonPressed = parseInt(this.id);
-			pf += lastTopMenuButtonPressed;
-			cs +=  pf;
-			document.getElementById('top_menu_pill_container').setAttribute('class', cs);
 		});
 	}
 	$(menu).button();
 }
-
-
 
 function writeFooter() {
 	var now = new Date();

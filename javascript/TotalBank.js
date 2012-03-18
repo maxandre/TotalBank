@@ -22,6 +22,49 @@
 	TotalBank.rangeEndSelected = false;
 
 	//Public Method
+	//TODO Renske opp i koden rundt tracking av pill. Initialisering av lyttere, plassering av variabler o.l.
+	TotalBank.trackPillFunction = function() {
+		var targetX = 0, targetW = 0, step = 0, startX = $('#top_menu_pill').offset().left;
+		if (this.trackPill) {
+			if (this.mouseX < topMenuButtonsLeft[0]) {
+				targetX = topMenuButtonsLeft[0] - 2;
+				targetW = $(topMenuButtons[0]).width() + 20;
+			} else if (this.mouseX > topMenuButtonsLeft[topMenuButtonsLeft.length-1]) { 
+				targetX = topMenuButtonsLeft[topMenuButtonsLeft.length-1] - 2;
+				targetW = $(topMenuButtons[topMenuButtons.length-1]).width() + 20;
+			} else {
+				for (var i = topMenuButtonsLeft.length -2; i >= 0; i--) {
+					if (this.mouseX > topMenuButtonsLeft[i]) {
+						targetX = topMenuButtonsLeft[i] - 2;
+						targetW = $(topMenuButtons[i]).width() +20;
+						i = -1;
+					}
+				}
+			}
+			if (targetX != startX) {
+				targetX = targetX.toFixed();
+				$('#top_menu_pill').animate({
+					left: targetX,
+					width: targetW
+				}, 200, 'linear', function() {
+					TotalBank.trackPillFunction();
+				});
+			} else {
+				setTimeout("TotalBank.trackPillFunction();", 100);
+			}
+		} else {
+			targetX = topMenuButtonsLeft[lastTopMenuButtonPressed] - 2;
+			targetW = $(topMenuButtons[lastTopMenuButtonPressed]).width() + 20;
+			if (targetX != startX) {
+				$('#top_menu_pill').animate({
+					left: targetX,
+					width: targetW
+				}, 1000, 'swing');
+			}
+		}
+
+	};
+
 	TotalBank.getStatementAsHTMLTable = function() {
 		if (debug) {
 			startMethod("TotalBank.getStatementAsHTMLTable()");
@@ -523,6 +566,32 @@
 	function addItem( item ) {
 		if ( item !== undefined ) {
 			console.log( "Adding " + $.trim(item) );
+		}
+	};
+	var resizecounter = 0;
+	var blockResize = false;
+	$(window).resize(function() {
+		TotalBank.onWindowResize();
+	});
+	
+	TotalBank.onWindowResize = function() {
+		var counter = ++resizecounter;
+		var startX = $('#top_menu_pill').offset().left;
+		addCode("resizing");
+		for (var i = 0; i < topMenuButtons.length; i++) {
+			topMenuButtonsLeft[i] = parseInt($(topMenuButtons[i]).offset().left);
+		}
+		targetX = topMenuButtonsLeft[lastTopMenuButtonPressed] - 2;
+		targetW = $(topMenuButtons[lastTopMenuButtonPressed]).width() + 20;
+		if (targetX != startX && counter == resizecounter && !blockResize) {
+			blockResize = true;
+			addCode("moving pill");
+			$('#top_menu_pill').animate({
+				left: targetX,
+				width: targetW
+			}, 1000, 'swing', function() {
+				blockResize = false;
+			});
 		}
 	};
 }(window.TotalBank = window.TotalBank || {}, jQuery));

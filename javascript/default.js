@@ -60,6 +60,30 @@ function loadTotalBank() {
 			TotalBank.updateBudgetCategory(cat);
 			TotalBank.updateTransaction(trans);
 		});
+		//TODO Må legge til muselytter i starten for at pillen skal følge pointer dersom musen starter i top_menu_container.
+		for (var i = 0; i < topMenuButtons.length; i++) {
+			addCode($(topMenuButtons[i]).width());
+			addCode($(topMenuButtons[i]).offset().left);
+			topMenuButtonsLeft[i] = parseInt($(topMenuButtons[i]).offset().left);
+		}
+		var width = topMenuButtonsLeft[1] - topMenuButtonsLeft[0];
+		var offset = topMenuButtonsLeft[0];
+		$('#top_menu_pill').width(width).offset({left: offset});
+		
+		$('#top_menu_container').on('mouseenter.trackPill', function(event) {
+			$('#top_menu_container').on('mousemove.trackPillInstance', function(event) {
+				TotalBank.mouseX = event.pageX;
+				TotalBank.mouseY = event.pageY;
+				event.stopPropagation();
+			});
+			TotalBank.trackPill = true;
+			TotalBank.trackPillFunction();
+		});
+		
+		$('#top_menu_container').on('mouseleave.trackPill', function(event) {
+			TotalBank.trackPill = false;
+			$('#top_menu_container').off('mousemove.trackPillInstance');
+		});
 
 	} else {
 		document.body.style.cursor = 'wait';
