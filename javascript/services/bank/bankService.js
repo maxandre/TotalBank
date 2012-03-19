@@ -1,18 +1,13 @@
 
-define(function() {
+define(['jQuery', 'BackBone', 'deBugger'], function($, BackBone, deBugger) {
 
-	function BankService() {
-
-		"use strict";
-
-		this.serviceName = lang_bank;
-		this.banks = [];
-
-		this.addBank = function(bank) {
+	var BankService = BackBone.Model.extend({
+		
+		addBank: function(bank) {
 			this.banks[this.banks.length] = bank;
-		};
+		},
 
-		this.getBank = function(id) {
+		getBank: function(id) {
 			var result = null, i;
 			for (i = 0; i < banks.length; i++) {
 				if (banks[i].getId() == id) {
@@ -21,37 +16,28 @@ define(function() {
 				}
 			}
 			return result;
-		};
-
-		this.totalAssets = function() {
+		},
+		
+		totalAssets: function() {
 			"use strict";
 			var result = 0, i;
 			for (i = 0; i < banks.length; i++) {
 				result += banks[i].totalAssets();
 			}
 			return result;
-		};
-
-		this.load = function() {
+		},
+		
+		load: function() {
 			this.loadExampleBanks();
 			User.registerService(this);
-		};
+		},
 
-		this.plugInOwner = function() {
-			return 'bank';
-		};
-
-		//
-		this.plugin = function() {
-			return [];
-		};
-
-		this.loadAsPlugin = function(target) {
+		loadAsPlugin: function(target) {
 			//Does nothing as this is not a plugin.
-		};
+		},
 
 		//TODO Kode for å starte bank-tjenesten.
-		this.loadAsService = function(target) {
+		loadAsService: function(target) {
 			$(document).delegate('.statementLineRemoveCategory', 'click.slrc', function(event) {
 				var trans = TotalBank.getCustomer().getTransactionById($(this).parent().parent().attr('id'));
 				var cat = TotalBank.getCustomer().getBudgetCategoryById(trans.categoryId);
@@ -59,10 +45,10 @@ define(function() {
 				TotalBank.updateBudgetCategory(cat);
 				TotalBank.updateTransaction(trans);
 			});
-		};
+		},
 
 
-		this.loadExampleBanks = function () {
+		loadExampleBanks: function () {
 			// getExampleAccount(accountNumber, owner, name, balance, available) {
 			if (debug) {
 				startMethod("getExampleAccount()");
@@ -82,9 +68,9 @@ define(function() {
 			}
 
 			return result;
-		};
+		},
 
-		this.getExampleBankTransactions = functioin(accountNumber) {
+		getExampleBankTransactions: function(accountNumber) {
 			if (debug) startMethod("getExampleBankStatement()");
 
 			var result = [];
@@ -106,8 +92,13 @@ define(function() {
 
 			if (debug) endMethod("getExampleBankStatement()");
 			return result;
-		};
-	};
+		},
+		
+		plugInOwner: 'bank',
+		plugin: [],
+		banks: [],
+
+	});
 	
-	return BankService;
+	return new BankService;
 });

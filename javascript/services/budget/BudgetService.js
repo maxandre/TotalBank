@@ -1,5 +1,5 @@
 
-define(function() {
+define(["$"], function($) {
 	function BudgetService() {
 
 		this.serviceName = lang_budget;
@@ -150,6 +150,106 @@ define(function() {
 			}
 
 			return result;
+		};
+		
+		this.categorizeStatementLine = function(statementLine, budgetCategory) {
+			debug = true;
+			if (debug) {
+				startMethod("TotalBank.categorizeStatementLine()");
+			}
+
+			if ($(statementLine).hasClass('statementLine') && $(budgetCategory).hasClass('budgetCategory')) {
+				var transaction, category, completeDrop = false, oldCategory = null;
+
+				transaction = TotalBank.getActiveAccount().getTransactionById($(statementLine).attr('id'));
+				category = TotalBank.getCustomer().getBudgetCategoryById($(budgetCategory).attr('id'));
+				if (transaction.categoryId > 0) {
+					oldCategory = TotalBank.getCustomer().getBudgetCategoryById(transaction.categoryId);
+				}
+
+				if (category && transaction) {
+					addCode("Har kategori og transaksjon");
+					if (category.isIncome() === true){
+						addCode("kategori er inntekt");
+						if (transaction.amount < 0) {
+							if (confirm(lang_confirmQuestion_1)) {
+								completeDrop = true;
+							}
+						} else {
+							addCode("Beløp var > 0.");
+							completeDrop = true;
+						}
+					} else {
+						addCode("Kategori er utgift.");
+						if (transaction.amount > 0) {
+							if (confirm(lang_confirmQuestion_2)) {
+								completeDrop = true;
+							}
+						} else {
+							addCode("Beløp var < 0.");
+							completeDrop = true;
+						}
+					} 
+				} else {
+					if (!category) scriptError("default.js > categorizeStatementLine", "Could not find budgetCategory");
+					if (!transaction) scriptError("default.js > categorizeStatementLine", "Could not find transaction.");
+				}
+
+				if (completeDrop) {
+					category.addTransaction(transaction);
+					addCode("Drop completed");
+					TotalBank.updateBudgetCategory(category);
+					TotalBank.updateTransaction(transaction);
+					if (oldCategory !== null) {
+						TotalBank.updateBudgetCategory(oldCategory);
+					}
+					var options = {};
+					$('#budget_body').effect('highlight', options, 1000);
+
+				}
+			} else {
+				scriptError("categorizeStatementLine(): one of the given inputs did not have the correct class.");
+			}
+
+			if (debug) {
+				endMethod("TotalBank.categorizeStatementLine()");
+			}
+
+		};
+
+		this.updateBudgetCategory = function(category) {
+			if (debug) {
+				startMethod("TotalBank.updateBudgetCategory()");
+			}
+
+			var budgeted, spent, percentage, newContent, color;
+
+			budgeted = this.getActiveBudget().budgetTemplate.getBudgetedAmountByCategoryId(category.getId()).toFixed(0);
+			spent = category.getAmountIncludingSubCategories(this.getActiveBudget().startDate, this.getActiveBudget().endDate).toFixed(0);
+			percentage = spent/budgeted;
+			color = getBudgetColor(percentage);
+			newContent = "<div class=\"grid_24 budgetCategory\" id=\"" + category.getId() + "\" style=\"background-color:" + color + "\">" + category.name + " : " + spent + " / " + budgeted + "</div>";
+			$('#budget_body #' + category.getId()).replaceWith(newContent);
+			if(category.isSubCategory) {
+				this.updateBudgetCategory(category.parentCategory);
+			}
+			if (debug) {
+				endMethod("TotalBank.updateBudgetCategory()");
+			}
+
+		};
+
+		this.updateTransaction = function(transaction) {
+			if (debug) {
+				startMethod("TotalBank.updateTransaction()");
+			}
+
+			$('.statementLine[id="' + transaction.id + '"]').replaceWith(HTMLGenerator.getTransactionAsTableRow(transaction));
+
+			if (debug) {
+				endMethod("TotalBank.updateTransaction()");
+			}
+
 		};
 
 		this.totalAssets = function() {
